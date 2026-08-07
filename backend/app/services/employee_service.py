@@ -39,3 +39,24 @@ class EmployeeService:
             return None
         
         return await self.repository.update(db, employee, employee_update)
+
+    async def delete_employee(
+        self,
+        db: AsyncSession,
+        employee_id: int,
+    ) -> bool:
+
+        employee = await self.repository.get_by_id(
+            db,
+            employee_id,
+        )
+
+        if employee is None:
+            return False
+
+        await self.repository.delete(
+            db,
+            employee,
+        )
+
+        return True

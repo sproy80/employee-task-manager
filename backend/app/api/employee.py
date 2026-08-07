@@ -5,6 +5,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.database.dependencies import get_db
 from app.schemas.employee import EmployeeCreate, EmployeeResponse, EmployeeUpdate
 from app.services.employee_service import EmployeeService
+from fastapi import Response, status
 
 router = APIRouter(
     prefix="/employees",
@@ -46,3 +47,25 @@ async def update_employee(
         raise HTTPException(status_code=404, detail="Employee not found")
     
     return employee
+
+@router.delete(
+    "/{employee_id}",
+    status_code=status.HTTP_204_NO_CONTENT,
+)
+async def delete_employee(
+    employee_id: int,
+    db: AsyncSession = Depends(get_db),
+):
+
+    deleted = await employee_service.delete_employee(
+        db,
+        employee_id,
+    )
+
+    if not deleted:
+        raise HTTPException(
+            status_code=404,
+            detail="Employee not found",
+        )
+
+    return Response(status_code=status.HTTP_204_NO_CONTENT)    

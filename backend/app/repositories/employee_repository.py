@@ -42,3 +42,13 @@ class EmployeeRepository:
         await db.refresh(employee)
 
         return employee
+
+
+    async def delete(
+        self,
+        db: AsyncSession,
+        employee: Employee,
+    ) -> None:
+
+        await db.delete(employee)
+        await db.commit()
