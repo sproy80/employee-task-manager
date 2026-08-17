@@ -3,6 +3,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.repositories.employee_repository import EmployeeRepository
 from app.schemas.employee import EmployeeCreate, EmployeeUpdate
 from app.models.employee import Employee
+from app.core.exceptions.exceptions import EmployeeNotFoundException
 
 
 class EmployeeService:
@@ -25,7 +26,12 @@ class EmployeeService:
     
     
     async def get_employee_by_id(self, db: AsyncSession, employee_id: int):
-        return await self.repository.get_by_id(db, employee_id)
+        employee = await self.repository.get_by_id(db, employee_id)
+        if employee is None:
+            raise EmployeeNotFoundException(employee_id)
+
+        return employee
+        
     
     async def update_employee(
               self,
@@ -36,7 +42,7 @@ class EmployeeService:
         )->Employee | None:
         employee = await self.repository.get_by_id(db, employee_id)
         if employee is None:
-            return None
+            raise EmployeeNotFoundException(employee_id)
         
         return await self.repository.update(db, employee, employee_update)
 
@@ -52,7 +58,7 @@ class EmployeeService:
         )
 
         if employee is None:
-            return False
+            raise EmployeeNotFoundException(employee_id)    
 
         await self.repository.delete(
             db,
