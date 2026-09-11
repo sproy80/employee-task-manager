@@ -1,9 +1,13 @@
+# backend/app/main.py
 from fastapi import FastAPI
 from app.api.employee import router as employee_router
 from app.api.task import router as task_router
 import app.models
 from app.core.exceptions.exception_handlers import app_exception_handler
 from app.core.exceptions.exceptions import AppException
+from app.core.logging_config import setup_logging
+
+setup_logging()
 
 app = FastAPI(
     title="Employee Task Manager API",

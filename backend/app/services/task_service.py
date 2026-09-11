@@ -5,7 +5,9 @@ from app.schemas.task import TaskCreate, TaskUpdate
 from app.models.task import Task
 from app.core.exceptions.exceptions import TaskNotFoundException, EmployeeNotFoundException
 from app.repositories.employee_repository import EmployeeRepository
+import logging
 
+logger = logging.getLogger(__name__)
 
 
 class TaskService:
@@ -21,9 +23,21 @@ class TaskService:
 
             employee = await self.employee_repository.get_by_id(db,task.employee_id)
             if employee is None:
+                logger.warning(
+                    "Task creation failed | employee_id=%s not found",
+                    task.employee_id,
+                )
                 raise EmployeeNotFoundException(task.employee_id)
 
-            return await self.repository.create(db, task)
+            # return await self.repository.create(db, task)
+            created_task = await self.repository.create(db, task)
+            logger.info(
+                "Task created successfully | task_id=%s | employee_id=%s",
+                created_task.id,
+                created_task.employee_id,
+            )
+
+            return created_task
 
     
 
