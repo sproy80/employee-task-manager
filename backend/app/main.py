@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from app.api.employee import router as employee_router
+from app.api.task import router as task_router
 import app.models
 from app.core.exceptions.exception_handlers import app_exception_handler
 from app.core.exceptions.exceptions import AppException
@@ -15,6 +16,7 @@ app.add_exception_handler(
 )
 
 app.include_router(employee_router)
+app.include_router(task_router)
 
 
 @app.get("/")

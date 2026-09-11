@@ -1,4 +1,4 @@
-
+#exceptions.py
 
 class AppException(Exception):
     def __init__(
@@ -21,3 +21,12 @@ class EmployeeNotFoundException(AppException):
             error_code="EMPLOYEE_NOT_FOUND",
             status_code=404
         )
+
+class TaskNotFoundException(AppException):
+    def __init__(self, task_id: int):
+        super().__init__(
+            message=f"Task with ID {task_id} was not found",
+            error_code="TASK_NOT_FOUND",
+            status_code=404
+        )
+        
